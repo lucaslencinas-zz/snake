@@ -1,0 +1,34 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Socket.IO chat</title>
+    <style>
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      body { font: 13px Helvetica, Arial; }
+      button { width: 9%; background: rgb(130, 224, 255); border: none; padding: 10px; }
+      #messages { list-style-type: none; margin: 0; padding: 0; }
+      #messages li { padding: 5px 10px; }
+      #messages li:nth-child(odd) { background: #eee; }
+    </style>
+  </head>
+  <body>
+    <div>
+      <div>Room: Test, Player: Lucas</div>
+      <h2>Waiting for other Players</h2>
+      <div>4 Players left</div>
+      <button id="upButton1">Up 1</button>
+      <ul id="messages"></ul>
+    </div>
+
+    <script src="https://cdn.socket.io/socket.io-1.2.0.js"></script>
+    <script src="http://code.jquery.com/jquery-1.11.1.js"></script>
+    <script>
+      var socket = io();
+      $('#upButton1').click(function(){
+        socket.emit('button clicked', "Button Up 1");
+        $('#messages').append($('<li>').text("upButton1 pressed"));
+        return false;
+      });
+    </script>
+  </body>
+</html>

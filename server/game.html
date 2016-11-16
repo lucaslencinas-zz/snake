@@ -1,0 +1,43 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Socket.IO chat</title>
+    <style>
+    </style>
+  </head>
+  <body>
+    <div class="top">
+      <button id="startGame">Start Game</button>
+    </div>
+    <div class="left">
+      <div class="snake">Snake Area Left</div>
+      <button id="upButton1">Up</button>
+      <button id="downButton1">Down</button>
+      <button id="leftButton1">Left</button>
+      <button id="rightButton1">Right</button>
+    </div>
+
+    <div class="right">
+      <div class="snake">Snake Area Left</div>
+      <button id="upButton2">Up</button>
+      <button id="downButton2">Down</button>
+      <button id="leftButton2">Left</button>
+      <button id="rightButton2">Right</button>
+    </div>
+
+    <script src="https://cdn.socket.io/socket.io-1.2.0.js"></script>
+    <script src="http://code.jquery.com/jquery-1.11.1.js"></script>
+    <script>
+      var socket = io();
+      $('#upButton1').click(function(){
+        console.log("adentro del click del upbutton1");
+        socket.emit('button clicked', "Button Up 1");
+        return false;
+      });
+      socket.on('button clicked', function(msg){
+        console.log("adentro del recieve del socket button clicked");
+        $('#messages').append($('<li>').text(msg));
+      });
+    </script>
+  </body>
+</html>
