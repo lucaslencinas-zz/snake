@@ -13,21 +13,33 @@
   </head>
   <body>
     <div>
-      <div>Room: Test, Player: Lucas</div>
+      <div>Room: <span id="roomName">...</span>, Player: <span id="playerName">...</span></div>
       <h2>Waiting for other Players</h2>
-      <div>4 Players left</div>
+      <div><span id="playersLeft">...</span> Players left</div>
       <button id="upButton1">Up 1</button>
-      <ul id="messages"></ul>
     </div>
 
     <script src="https://cdn.socket.io/socket.io-1.2.0.js"></script>
     <script src="http://code.jquery.com/jquery-1.11.1.js"></script>
+    <script src="/javascripts/queryUtils.js"></script>
     <script>
-      var socket = io.connect('http://localhost:3000');
-      $('#upButton1').click(function(){
-        socket.emit('button clicked', "Button Up 1");
-        $('#messages').append($('<li>').text("upButton1 pressed"));
-        return false;
+      $( document ).ready(function() {
+        var room = getParameterByName('room');
+        var name = getParameterByName('name');
+        var playersLeft = 5;
+        $("#roomName").text(room);
+        $("#playerName").text(name);
+        $("#playersLeft").text(playersLeft);
+        var params = 'room=' + room + '&name=' + name;
+        var socket = io.connect('http://localhost:3000', { query: params });
+        socket.on('user-connected', function(data){
+          console.log('user connected: ' + JSON.stringify(data));
+        });
+        $('#upButton1').click(function(){
+          socket.emit('button clicked', "Button Up 1");
+          $('#messages').append($('<li>').text("upButton1 pressed"));
+          return false;
+        });
       });
     </script>
   </body>

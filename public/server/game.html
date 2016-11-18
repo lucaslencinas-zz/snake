@@ -7,6 +7,11 @@
   </head>
   <body>
     <div class="top">
+      <div class="detail">
+        Room: <span id="roomName">...</span> -
+        Pass: <span id="roomPass">...</span> -
+        Amount of players: <span id="amountOfPlayers">...</span>
+      </div>
       <button id="startGame">Start Game</button>
     </div>
     <div class="left">
@@ -27,17 +32,29 @@
 
     <script src="https://cdn.socket.io/socket.io-1.2.0.js"></script>
     <script src="http://code.jquery.com/jquery-1.11.1.js"></script>
+    <script src="/javascripts/queryUtils.js"></script>
     <script>
-      var socket = io.connect( "http://localhost:3000");
-      $('#upButton1').click(function(){
-        console.log("adentro del click del upbutton1");
-        socket.emit('button clicked', "Button Up 1");
-        return false;
+    $( document ).ready(function() {
+      var room = getParameterByName('room');
+      var pass = getParameterByName('pass');
+      var amountOfPlayers = getParameterByName('amountOfPlayers');
+      $("#roomName").text(room);
+      $("#roomPass").text(pass);
+      $("#amountOfPlayers").text(amountOfPlayers);
+      var params = 'room=' + room + '&amountOfPlayers=' + amountOfPlayers;
+      var socket = io.connect('http://localhost:3000', { query: params });
+      socket.on('user-connected', function(data){
+        var playersLeft = $("#amountOfPlayers").text() -1;
+        $("#amountOfPlayers").text(playersLeft);
+        // If players Left is zero, then enable button Start Game
+        console.log('user connected: ' + JSON.stringify(data));
       });
       socket.on('button clicked', function(msg){
         console.log("adentro del recieve del socket button clicked");
         $('#messages').append($('<li>').text(msg));
       });
+
+    });
     </script>
   </body>
 </html>

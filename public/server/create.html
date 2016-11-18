@@ -11,15 +11,15 @@
       <div class="form">
         <div class="form-row">
           <label for="roomName">Room</label>
-          <input type="text" name="roomName" value="test">
+          <input type="text" id="roomName" value="test">
         </div>
         <div class="form-row">
           <label for="roomPass">Password</label>
-          <input type="text" name="roomPass" value="test">
+          <input type="text" id="roomPass" value="test">
         </div>
         <div class="form-row">
           <label for="roomPlayers">Players</label>
-          <select name="rommPlayers">
+          <select name="roomPlayers" id="roomPlayers">
             <option value="1">1</option>
             <option value="2">2</option>
             <option value="3">3</option>
@@ -31,7 +31,7 @@
           </select>
         </div>
         <div class="form-row">
-          <button type="button" name="createGameButton">Create Game</button>
+          <button type="button" name="createGameButton" id="createGameButton">Create Game</button>
         </div>
       </div>
     </div>
@@ -39,6 +39,17 @@
     <script src="https://cdn.socket.io/socket.io-1.2.0.js"></script>
     <script src="http://code.jquery.com/jquery-1.11.1.js"></script>
     <script>
+      $( document ).ready(function() {
+        $("#createGameButton").click(function(){
+          var room = $("#roomName").val();
+          var pass = $("#roomPass").val();
+          var amountOfPlayers = $("#roomPlayers :selected").text();
+          var location = '/server/game?' + 'room=' + room + '&';
+          location += 'pass=' + pass + '&';
+          location += 'amountOfPlayers=' + amountOfPlayers;
+          window.location = location;
+        });
+      });
     </script>
   </body>
 </html>

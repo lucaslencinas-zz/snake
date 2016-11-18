@@ -6,11 +6,12 @@ router.get('/', function(req, res, next){
   res.sendFile(path.join(__dirname, '../public', '/client/join.html'));
 });
 
-router.get('/join/', function(req, res, next){
+router.get('/join', function(req, res, next){
   res.sendFile(path.join(__dirname, '../public', '/client/join.html'));
 });
 
-router.get('/player/', function(req, res, next){
+router.get('/player', function(req, res, next){
+  console.log("Me llego un req.params: " + JSON.stringify(req.query));
   res.sendFile(path.join(__dirname, '../public', '/client/player.html'));
 });
 

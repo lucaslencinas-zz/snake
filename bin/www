@@ -8,20 +8,35 @@ var app = require('../app');
 var debug = require('debug')('snake:server');
 var server = require('http').Server(app);
 var io = require('socket.io')(server);
-
+var base = require('../db').base;
 /**
  * Listen on provided port, on all network interfaces.
  */
 
+
 server.listen(3000);
 server.on('error', onError);
 server.on('listening', onListening);
+base.create();
 
 /**
  * Web sockets listeners for the different events
  */
 server.listen('3000');
 io.on('connection', function(socket){
+  if(socket.handshake.query.amountOfPlayers){
+    // Is the server
+  } else {
+    var player = {
+      id: socket.id,
+      room: socket.handshake.query.room,
+      name: socket.handshake.query.name
+    };
+    base.insertPlayer(player);
+    console.log('players: ' + base.getPlayers());
+    io.emit('user-connected', {msg: "usuario connectado", player: player});
+  }
+
   socket.on('button clicked', function(msg){
     console.log('button clicked');
     io.emit('button clicked', msg);

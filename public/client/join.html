@@ -11,24 +11,35 @@
       <div class="form">
         <div class="form-row">
           <label for="roomName">Room</label>
-          <input type="text" name="roomName" value="test">
+          <input type="text" name="roomName" value="test" id='roomName'>
         </div>
         <div class="form-row">
           <label for="roomPass">Password</label>
-          <input type="text" name="roomPass" value="test">
+          <input type="text" name="roomPass" value="test" id='roomPass'>
         </div>
         <div class="form-row">
           <label for="roomPlayerName">Name</label>
-          <input type="text" name="roomPlayerName" value="lucas">
+          <input type="text" name="roomPlayerName" value="lucas" id='roomPlayerName'>
         </div>
         <div class="form-row">
-          <button type="button" name="createGameButton">Join Game</button>
+          <button type="button" id="joinGameButton">Join Game</button>
         </div>
       </div>
     </div>
     <script src="https://cdn.socket.io/socket.io-1.2.0.js"></script>
     <script src="http://code.jquery.com/jquery-1.11.1.js"></script>
     <script>
+    $( document ).ready(function() {
+      $("#joinGameButton").click(function(){
+        var room = $("#roomName").val();
+        var pass = $("#roomPass").val();
+        var name = $("#roomPlayerName").val();
+        var location = '/player?' + 'room=' + room + '&';
+        location += 'pass=' + pass + '&';
+        location += 'name=' + name;
+        window.location = location;
+      });
+    });
     </script>
   </body>
 </html>
