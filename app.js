@@ -35,7 +35,7 @@ app.use(function(err, req, res, next) {
   console.log("The request is here: error handler: " + err);
   res.status(err.status || 500);
   if (err.status === 404){
-    res.status(404).sendFile(path.join(__dirname, '../public', '404.html'));
+    res.status(404).sendFile(path.join(__dirname, 'public', '404.html'));
     // res.render('404.html');
   } else {
     res.status(500).send('internal server error');

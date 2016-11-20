@@ -14,9 +14,8 @@
   <body>
     <div>
       <div>Room: <span id="roomName">...</span>, Player: <span id="playerName">...</span></div>
-      <h2>Waiting for other Players</h2>
-      <div><span id="playersLeft">...</span> Players left</div>
-      <button id="upButton1">Up 1</button>
+      <h2>Waiting for other Players...</h2>
+      <button id="mySpot">...</button>
     </div>
 
     <script src="https://cdn.socket.io/socket.io-1.2.0.js"></script>
@@ -24,6 +23,15 @@
     <script src="/javascripts/queryUtils.js"></script>
     <script>
       $( document ).ready(function() {
+        // function randomIntFromInterval(min,max){
+        //   return Math.floor(Math.random()*(max-min+1)+min);
+        // }
+        // var times = [];
+        // for(var i = 0; i < 10; i++){
+        //   var time = randomIntFromInterval(3, 8);
+        //   console.log('time: ' + time)
+        //   times.push(time);
+        // }
         var room = getParameterByName('room');
         var name = getParameterByName('name');
         var playersLeft = 5;
@@ -32,13 +40,25 @@
         $("#playersLeft").text(playersLeft);
         var params = 'room=' + room + '&name=' + name;
         var socket = io.connect('http://localhost:3000', { query: params });
-        socket.on('user-connected', function(data){
-          console.log('user connected: ' + JSON.stringify(data));
-        });
-        $('#upButton1').click(function(){
-          socket.emit('button clicked', "Button Up 1");
-          $('#messages').append($('<li>').text("upButton1 pressed"));
+        $('#mySpot').click(function(){
+          socket.emit('button-clicked', $("#mySpot").data('spot'));
           return false;
+        });
+
+        socket.on('spot-assigned', function(player){
+          $("#mySpot").data('spot', player.spot.id);
+          $("#mySpot").text('Team: ' + player.spot.team + ' - Direction:' + player.spot.direction );
+          console.log('spot assigned: ' + JSON.stringify(player));
+        });
+
+        socket.on('game-started', function(){
+          console.log('game started!! ');
+          // times.forEach(function(element, index){
+          //   var actualTime = element * 100;
+          //   setTimeout(function() {
+          //     $("#mySpot").click();
+          //   }, element * 1000);
+          // });
         });
       });
     </script>

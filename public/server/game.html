@@ -3,6 +3,9 @@
   <head>
     <title>Socket.IO chat</title>
     <style>
+    div button {
+      background: wheat;
+    }
     </style>
   </head>
   <body>
@@ -12,7 +15,7 @@
         Pass: <span id="roomPass">...</span> -
         Amount of players: <span id="amountOfPlayers">...</span>
       </div>
-      <button id="startGame">Start Game</button>
+      <button id="startGame" disabled>Start Game</button>
     </div>
     <div class="left">
       <div class="snake">Snake Area Left</div>
@@ -23,7 +26,7 @@
     </div>
 
     <div class="right">
-      <div class="snake">Snake Area Left</div>
+      <div class="snake">Snake Area Right</div>
       <button id="upButton2">Up</button>
       <button id="downButton2">Down</button>
       <button id="leftButton2">Left</button>
@@ -35,6 +38,28 @@
     <script src="/javascripts/queryUtils.js"></script>
     <script>
     $( document ).ready(function() {
+      var directions = {
+        UP: 'UP',
+        LEFT: 'LEFT',
+        RIGHT: 'RIGHT',
+        DOWN: 'DOWN'
+      }
+
+      var teams = {
+        LEFT: 'LEFT',
+        RIGHT: 'RIGHT'
+      }
+      var buttons = [
+        { id: "upButton1", set: false, direction: directions.UP, team: teams.LEFT },
+        { id: "downButton1", set: false, direction: directions.DOWN, team: teams.LEFT },
+        { id: "leftButton1", set: false, direction: directions.LEFT, team: teams.LEFT },
+        { id: "rightButton1", set: false, direction: directions.RIGHT, team: teams.LEFT },
+        { id: "upButton2", set: false, direction: directions.UP, team: teams.RIGHT },
+        { id: "downButton2", set: false, direction: directions.DOWN, team: teams.RIGHT },
+        { id: "leftButton2", set: false, direction: directions.LEFT, team: teams.RIGHT },
+        { id: "rightButton2", set: false, direction: directions.RIGHT, team: teams.RIGHT },
+      ];
+
       var room = getParameterByName('room');
       var pass = getParameterByName('pass');
       var amountOfPlayers = getParameterByName('amountOfPlayers');
@@ -43,15 +68,64 @@
       $("#amountOfPlayers").text(amountOfPlayers);
       var params = 'room=' + room + '&amountOfPlayers=' + amountOfPlayers;
       var socket = io.connect('http://localhost:3000', { query: params });
-      socket.on('user-connected', function(data){
-        var playersLeft = $("#amountOfPlayers").text() -1;
-        $("#amountOfPlayers").text(playersLeft);
-        // If players Left is zero, then enable button Start Game
-        console.log('user connected: ' + JSON.stringify(data));
+      var amountOfButtons = $('button').length;
+
+      $("#startGame").click(function(){
+        console.log('Game Started!!');
+        socket.emit('game-started', {});
       });
-      socket.on('button clicked', function(msg){
-        console.log("adentro del recieve del socket button clicked");
-        $('#messages').append($('<li>').text(msg));
+
+      function isNotSet(button) {
+        return button.set === false;
+      }
+      function assignSpot(player) {
+        var button = buttons.find(isNotSet);
+        $('#' + button.id).css( "background-color", player.color );
+        $('#' + button.id).text($('#' + button.id).text() + ' - ' + player.name);
+        $('#' + button.id).data( "playerId", player.id );
+        button.set = true;
+        button.playerId = player.id;
+        var playersLeft = parseInt($("#amountOfPlayers").text()) -1;
+        $("#amountOfPlayers").text(playersLeft);
+        if(playersLeft == 0) {
+          $('#startGame').removeAttr("disabled");
+        }
+        console.log('user connected: ' + JSON.stringify(player));
+        player.spot = button;
+        socket.emit('spot-assigned', player);
+      }
+
+      socket.on('user-connected', function(data){
+        assignSpot(data.player);
+      });
+
+      socket.on('current-players', function(data){
+        data.players.forEach(function(player,index) {
+          assignSpot(player);
+        });
+      });
+
+      socket.on('button-clicked', function(data){
+        console.log(data);
+        var button = buttons.find(function(b){
+          return b.id === data;
+        });
+        var msg = "Team: " + button.team + ", Direction: " + button.direction;
+        console.log("button-clicked: " + msg);
+      });
+
+      socket.on('user-disconnected', function(data){
+        console.log("User disconnected: " + JSON.stringify(data));
+        var button = buttons.find(function(b){
+          return b.playerId === data.player.id;
+        });
+        $('#' + button.id).removeData( "playerId" );
+        $('#' + button.id).css( "background-color", "wheat" );
+        $('#' + button.id).text($('#' + button.id).text().split(' - ')[0]);
+        button.set = false;
+        button.playerId = undefined;
+        var playersLeft = parseInt($("#amountOfPlayers").text()) + 1;
+        $("#amountOfPlayers").text(playersLeft);
       });
 
     });

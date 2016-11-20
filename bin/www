@@ -12,7 +12,35 @@ var base = require('../db').base;
 /**
  * Listen on provided port, on all network interfaces.
  */
+var colors = [
+  '#0000aa',
+  '#0000dd',
+  '#00aa00',
+  '#00aaaa',
+  '#00aadd',
+  '#aa0000',
+  '#aa00aa',
+  '#aaaa00',
+  '#aaaaaa',
+  '#aaaadd',
+  '#aadd00',
+  '#aaddaa',
+  '#aadddd',
+  '#dd0000',
+  '#dd00aa',
+  '#dd00dd',
+  '#ddaa00',
+  '#ddaaaa',
+  '#dddd00',
+  '#ddddaa',
+  '#dddddd'
+];
 
+function getRandomInt(min, max) {
+  min = Math.ceil(min);
+  max = Math.floor(max);
+  return Math.floor(Math.random() * (max - min)) + min;
+}
 
 server.listen(3000);
 server.on('error', onError);
@@ -26,20 +54,41 @@ server.listen('3000');
 io.on('connection', function(socket){
   if(socket.handshake.query.amountOfPlayers){
     // Is the server
+    io.emit('current-players', {msg: "Current players", players: base.getPlayers()});
   } else {
+
     var player = {
       id: socket.id,
       room: socket.handshake.query.room,
-      name: socket.handshake.query.name
+      name: socket.handshake.query.name,
+      color: colors[getRandomInt(0,colors.length)]
     };
     base.insertPlayer(player);
     console.log('players: ' + base.getPlayers());
     io.emit('user-connected', {msg: "usuario connectado", player: player});
   }
 
-  socket.on('button clicked', function(msg){
-    console.log('button clicked');
-    io.emit('button clicked', msg);
+  socket.on('button-clicked', function(msg){
+    io.emit('button-clicked', msg);
+  });
+
+  socket.on('spot-assigned', function(player){
+    console.log('spot-assigned');
+    io.to(player.id).emit("spot-assigned", player);
+  });
+
+  socket.on('game-started', function(msg){
+    console.log('game-started!!');
+    io.emit('game-started', {});
+  });
+
+  socket.on('disconnect', function() {
+    var player = base.findPlayer(socket.id);
+    if (player !== undefined) {
+      base.removePlayerById(player.id);
+      io.emit('user-disconnected', {msg: "usuario desconectado", player: player});
+      console.log('Got disconnect: ' + JSON.stringify(player));
+    }
   });
 });
 

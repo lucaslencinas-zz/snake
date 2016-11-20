@@ -22,5 +22,14 @@ module.exports.base = {
   },
   getRooms: function() {
     return rooms.data;
+  },
+  findPlayer: function(id) {
+    return players.find({ 'id': id })[0];
+  },
+  findRoom: function(room, pass) {
+    return rooms.find({ 'room': room, 'pass': pass })[0];
+  },
+  removePlayerById: function(id){
+    players.removeWhere({ 'id': id });
   }
 };
