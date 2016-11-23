@@ -3,17 +3,55 @@
   <head>
     <title>Socket.IO chat</title>
     <style>
-      * { margin: 0; padding: 0; box-sizing: border-box; }
-      body { font: 13px Helvetica, Arial; }
-      button { width: 9%; background: rgb(130, 224, 255); border: none; padding: 10px; }
-      #messages { list-style-type: none; margin: 0; padding: 0; }
-      #messages li { padding: 5px 10px; }
-      #messages li:nth-child(odd) { background: #eee; }
+      html,body {
+        height: 100%;
+        width: 100%;
+        margin: 0;
+        background-color: darkkhaki;
+        font-family: 'Lucida Console', Monaco;
+        font-size: 40px;
+      }
+      h2 {
+        font-size: 70px;
+        text-align: center;
+      }
+      .main {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        height: 100%;
+      }
+
+      .detail {
+        display: flex;
+        width: 90%;
+        justify-content: space-around;
+        border: antiquewhite 2px solid;
+        height: 8%;
+      }
+
+      .infodivs {
+        border: white 1px solid;
+        padding: 10px;
+      }
+
+      button {
+        height: 60%;
+        width: 80%;
+        font-size: inherit;
+      }
     </style>
   </head>
   <body>
-    <div>
-      <div>Room: <span id="roomName">...</span>, Player: <span id="playerName">...</span></div>
+    <div class="main">
+      <div class="detail">
+        <div class="infodivs">
+          Room: <span id="roomName">...</span>
+        </div>
+        <div class="infodivs">
+          Player: <span id="playerName">...</span>
+        </div>
+      </div>
       <h2>Waiting for other Players...</h2>
       <button id="mySpot">...</button>
     </div>
@@ -39,7 +77,7 @@
         $("#playerName").text(name);
         $("#playersLeft").text(playersLeft);
         var params = 'room=' + room + '&name=' + name;
-        var socket = io.connect('http://localhost:3000', { query: params });
+        var socket = io.connect(window.location.origin, { query: params });
         $('#mySpot').click(function(){
           socket.emit('button-clicked', $("#mySpot").data('spot'));
           return false;

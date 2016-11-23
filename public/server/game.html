@@ -3,34 +3,116 @@
   <head>
     <title>Socket.IO chat</title>
     <style>
-    div button {
-      background: wheat;
+    html,body {
+      height: 100%;
+      width: 100%;
+      margin: 0;
+      background-color: darkkhaki;
+      font-family: 'Lucida Console', Monaco;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
     }
+    .detail {
+      display: flex;
+      width: 90%;
+      justify-content: space-around;
+      border: antiquewhite 2px solid;
+      height: 8%;
+    }
+
+    .infodivs {
+      border: white 1px solid;
+      padding: 10px;
+    }
+    .form-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 5px 0;
+    }
+
+    .button-row {
+      justify-content: center;
+      display: flex;
+      align-self: center;
+      flex-direction: column;
+      height: 6%
+    }
+
+    .button-row button {
+      height: 80%
+    }
+
+    .panels{
+      display: flex;
+      height: 80%;
+      border: antiquewhite 2px solid;
+      width: 90%;
+      justify-content: space-between;
+    }
+
+    .panel{
+      width: 49%;
+      border: blue 1px solid;
+    }
+
+    .panel{
+      border: blue 1px solid;
+      display: flex;
+      flex-direction: column;
+    }
+    .players{
+      justify-content: space-around;
+      margin-top: auto;
+      display: flex;
+      border: grey 2px solid;
+      height: 10%;
+    }
+
+    .players div{
+      width: 23%;
+      border: blue 1px solid;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
     </style>
   </head>
   <body>
-    <div class="top">
-      <div class="detail">
-        Room: <span id="roomName">...</span> -
-        Pass: <span id="roomPass">...</span> -
+    <div class="detail">
+      <div class="infodivs">
+        Room: <span id="roomName">...</span>
+      </div>
+      <div class="infodivs">
+        Pass: <span id="roomPass">...</span>
+      </div>
+      <div class="infodivs">
         Amount of players: <span id="amountOfPlayers">...</span>
       </div>
+    </div>
+    <div class="button-row">
       <button id="startGame" disabled>Start Game</button>
     </div>
-    <div class="left">
-      <div class="snake">Snake Area Left</div>
-      <button id="upButton1">Up</button>
-      <button id="downButton1">Down</button>
-      <button id="leftButton1">Left</button>
-      <button id="rightButton1">Right</button>
-    </div>
-
-    <div class="right">
-      <div class="snake">Snake Area Right</div>
-      <button id="upButton2">Up</button>
-      <button id="downButton2">Down</button>
-      <button id="leftButton2">Left</button>
-      <button id="rightButton2">Right</button>
+    <div class="panels">
+      <div class="panel left">
+        <div class="snake">Snake Area Left</div>
+        <div class="players">
+          <div id="upButton1">Up</div>
+          <div id="downButton1">Down</div>
+          <div id="leftButton1">Left</div>
+          <div id="rightButton1">Right</div>
+        </div>
+      </div>
+      <div class="panel right">
+        <div class="snake">Snake Area Right</div>
+        <div class="players">
+          <div id="upButton2">Up</div>
+          <div id="downButton2">Down</div>
+          <div id="leftButton2">Left</div>
+          <div id="rightButton2">Right</div>
+        </div>
+      </div>
     </div>
 
     <script src="https://cdn.socket.io/socket.io-1.2.0.js"></script>
@@ -106,6 +188,7 @@
       });
 
       socket.on('button-clicked', function(data){
+        //data es UpButton1 por ejemplo, hacerlo mejor
         console.log(data);
         var button = buttons.find(function(b){
           return b.id === data;
