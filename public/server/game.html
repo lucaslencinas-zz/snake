@@ -2,83 +2,9 @@
 <html>
   <head>
     <title>Socket.IO chat</title>
-    <style>
-    html,body {
-      height: 100%;
-      width: 100%;
-      margin: 0;
-      background-color: darkkhaki;
-      font-family: 'Lucida Console', Monaco;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
-    .detail {
-      display: flex;
-      width: 90%;
-      justify-content: space-around;
-      border: antiquewhite 2px solid;
-      height: 8%;
-    }
-
-    .infodivs {
-      border: white 1px solid;
-      padding: 10px;
-    }
-    .form-row {
-      display: flex;
-      justify-content: space-between;
-      padding: 5px 0;
-    }
-
-    .button-row {
-      justify-content: center;
-      display: flex;
-      align-self: center;
-      flex-direction: column;
-      height: 6%
-    }
-
-    .button-row button {
-      height: 80%
-    }
-
-    .panels{
-      display: flex;
-      height: 80%;
-      border: antiquewhite 2px solid;
-      width: 90%;
-      justify-content: space-between;
-    }
-
-    .panel{
-      width: 49%;
-      border: blue 1px solid;
-    }
-
-    .panel{
-      border: blue 1px solid;
-      display: flex;
-      flex-direction: column;
-    }
-    .players{
-      justify-content: space-around;
-      margin-top: auto;
-      display: flex;
-      border: grey 2px solid;
-      height: 10%;
-    }
-
-    .players div{
-      width: 23%;
-      border: blue 1px solid;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    </style>
   </head>
+  <link rel="stylesheet" type="text/css" href="/stylesheets/game.css">
+  <link rel="stylesheet" type="text/css" href="/stylesheets/simon.css">
   <body>
     <div class="detail">
       <div class="infodivs">
@@ -92,11 +18,27 @@
       </div>
     </div>
     <div class="button-row">
-      <button id="startGame" disabled>Start Game</button>
+      <button id="startGame" data-action="start" disabled>Start Game</button>
     </div>
     <div class="panels">
       <div class="panel left">
-        <div class="snake">Snake Area Left</div>
+        <div class="snake">
+          <div class="game-board">
+            <h2>Round: <span data-round="0">0</span></h2>
+    				<div class="simon">
+    					<ul>
+    						<li class="tile red" data-tile="1"></li>
+    						<li class="tile blue" data-tile="2"></li>
+    						<li class="tile yellow" data-tile="3"></li>
+    						<li class="tile green" data-tile="4"></li>
+    					</ul>
+    				</div>
+            <div class="game-info">
+      				<p data-action="lose">Sorry, you lost after <span data-round="0"></span> rounds!</p>
+      			</div>
+            <div data-action="sound"></div>
+    			</div>
+        </div>
         <div class="players">
           <div id="upButton1">Up</div>
           <div id="downButton1">Down</div>
@@ -114,12 +56,13 @@
         </div>
       </div>
     </div>
-
-    <script src="/javascripts/socketio.js"></script>
     <script src="/javascripts/jquery.js"></script>
+    <script src="/javascripts/socketio.js"></script>
     <script src="/javascripts/queryUtils.js"></script>
+    <script src="/javascripts/simon.js"></script>
     <script>
     $( document ).ready(function() {
+
       var directions = {
         UP: 'UP',
         LEFT: 'LEFT',
@@ -127,15 +70,22 @@
         DOWN: 'DOWN'
       }
 
+      var colors = {
+        BLUE: '.left .blue',
+        YELLOW: '.left .yellow',
+        GREEN: '.left .green',
+        RED: '.left .red'
+      }
+
       var teams = {
         LEFT: 'LEFT',
         RIGHT: 'RIGHT'
       }
       var buttons = [
-        { id: "upButton1", set: false, direction: directions.UP, team: teams.LEFT },
-        { id: "downButton1", set: false, direction: directions.DOWN, team: teams.LEFT },
-        { id: "leftButton1", set: false, direction: directions.LEFT, team: teams.LEFT },
-        { id: "rightButton1", set: false, direction: directions.RIGHT, team: teams.LEFT },
+        { id: "upButton1", set: false, direction: directions.UP, team: teams.LEFT, classColor: colors.BLUE },
+        { id: "downButton1", set: false, direction: directions.DOWN, team: teams.LEFT, classColor: colors.YELLOW },
+        { id: "leftButton1", set: false, direction: directions.LEFT, team: teams.LEFT, classColor: colors.GREEN },
+        { id: "rightButton1", set: false, direction: directions.RIGHT, team: teams.LEFT, classColor: colors.RED },
         { id: "upButton2", set: false, direction: directions.UP, team: teams.RIGHT },
         { id: "downButton2", set: false, direction: directions.DOWN, team: teams.RIGHT },
         { id: "leftButton2", set: false, direction: directions.LEFT, team: teams.RIGHT },
@@ -194,6 +144,9 @@
           return b.id === data;
         });
         var msg = "Team: " + button.team + ", Direction: " + button.direction;
+        Simon.registerClick({target: $(button.classColor)});
+        Simon.playSound($(button.classColor).data('tile'));
+  			Simon.lightUp($(button.classColor).data('tile'));
         console.log("button-clicked: " + msg);
       });
 
@@ -211,7 +164,11 @@
         $("#amountOfPlayers").text(playersLeft);
       });
 
+      setTimeout(function() {
+        Simon.init();
+      }, 1000);
     });
+
     </script>
   </body>
 </html>

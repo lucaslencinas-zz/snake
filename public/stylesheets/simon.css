@@ -55,6 +55,10 @@
     	opacity: 1;
     }
 
+    .blink {
+    	color: red;
+    }
+
     .red, .blue, .yellow, .green {
     	height: 290px;
     	-webkit-border-radius: 150px 150px 150px 150px;

@@ -27,7 +27,7 @@ var Simon = {
 		$('[data-round]').text(++this.round);
 		this.sequence.push(this.randomNumber());
 		this.copy = this.sequence.slice(0);
-		this.animate(this.sequence);
+    this.animate(this.sequence);
 	},
 
 	// the game is controlled primarily through this function, along with checkLose().
@@ -48,7 +48,14 @@ var Simon = {
 		// copy array will be empty when user has successfully completed sequence
 		if (this.copy.length === 0 && this.active) {
 			this.deactivateSimonBoard();
-			this.newRound();
+      var that = this;
+      window.setTimeout(function() {
+        that.newRound();
+      }, 1200);
+      var $round = $('[data-round]').addClass('blink');
+  		window.setTimeout(function() {
+  			$round.removeClass('blink');
+  		}, 1000);
 
 		} else if (!this.active) { // user lost
 			this.deactivateSimonBoard();
@@ -121,8 +128,8 @@ var Simon = {
 	// 2. <audio> tag provides our fallbacks (ogg, mp3).
 	playSound: function(tile) {
 		var audio = $('<audio autoplay></audio>');
-		audio.append('<source src="sounds/' + tile + '.ogg" type="audio/ogg" />');
-		audio.append('<source src="sounds/' + tile + '.mp3" type="audio/mp3" />');
+		audio.append('<source src="/sounds/' + tile + '.ogg" type="audio/ogg" />');
+		audio.append('<source src="/sounds/' + tile + '.mp3" type="audio/mp3" />');
 		$('[data-action=sound]').html(audio);
 	},
 
