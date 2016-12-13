@@ -1,7 +1,7 @@
 {
-  "name": "snake",
+  "name": "simon",
   "version": "0.0.1",
-  "description": "snake with multiple players",
+  "description": "simon with multiple players",
   "scripts": {
     "start": "node ./bin/www"
   },
