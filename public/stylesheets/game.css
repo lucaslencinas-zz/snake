@@ -49,10 +49,6 @@ html,body {
 .panel{
   width: 49%;
   border: blue 1px solid;
-}
-
-.panel{
-  border: blue 1px solid;
   display: flex;
   flex-direction: column;
 }
