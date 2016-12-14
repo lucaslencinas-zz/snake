@@ -4,7 +4,7 @@
     <title>Socket.IO chat</title>
   </head>
   <link rel="stylesheet" type="text/css" href="/stylesheets/game.css">
-  <link rel="stylesheet" type="text/css" href="/stylesheets/simon.css">
+  <link rel="stylesheet" type="text/css" href="/stylesheets/snake.css">
   <body>
     <div class="detail">
       <div class="infodivs">
@@ -20,55 +20,25 @@
     <div class="button-row">
       <button id="startGame" data-action="start" disabled>Start Game</button>
     </div>
-    <div class="panels">
-      <div class="panel left">
-        <div class="simon">
-          <div class="game-board">
-            <h2>Round: <span data-round="0">0</span></h2>
-    				<div class="simon">
-    					<ul>
-    						<li class="tile red" data-tile="1"></li>
-    						<li class="tile blue" data-tile="2"></li>
-    						<li class="tile yellow" data-tile="3"></li>
-    						<li class="tile green" data-tile="4"></li>
-    					</ul>
-    				</div>
-            <div class="game-info">
-      				<p data-action="lose">Sorry, you lost after <span data-round="0"></span> rounds!</p>
-      			</div>
-            <div data-action="sound"></div>
-    			</div>
-        </div>
-        <div class="players">
-          <div id="upButton1">Up</div>
-          <div id="downButton1">Down</div>
-          <div id="leftButton1">Left</div>
-          <div id="rightButton1">Right</div>
+    <div class="panel">
+      <div class="board">
+        <div class="board-row">
         </div>
       </div>
-      <div class="panel right">
-        <div class="simon">Simon Area Right</div>
-        <div class="players">
-          <div id="upButton2">Up</div>
-          <div id="downButton2">Down</div>
-          <div id="leftButton2">Left</div>
-          <div id="rightButton2">Right</div>
-        </div>
+      <div class="players">
+        <div id="upButton2">Up</div>
+        <div id="downButton2">Down</div>
+        <div id="leftButton2">Left</div>
+        <div id="rightButton2">Right</div>
       </div>
     </div>
     <script src="/javascripts/jquery.js"></script>
     <script src="/javascripts/socketio.js"></script>
     <script src="/javascripts/queryUtils.js"></script>
-    <script src="/javascripts/simon.js"></script>
+    <script src="/javascripts/snake.js"></script>
     <script>
     $( document ).ready(function() {
-
-      var directions = {
-        UP: 'UP',
-        LEFT: 'LEFT',
-        RIGHT: 'RIGHT',
-        DOWN: 'DOWN'
-      }
+      /*
 
       var colors = {
         BLUE: '.left .blue',
@@ -85,13 +55,9 @@
         { id: "upButton1", set: false, direction: directions.UP, team: teams.LEFT, classColor: colors.BLUE },
         { id: "downButton1", set: false, direction: directions.DOWN, team: teams.LEFT, classColor: colors.YELLOW },
         { id: "leftButton1", set: false, direction: directions.LEFT, team: teams.LEFT, classColor: colors.GREEN },
-        { id: "rightButton1", set: false, direction: directions.RIGHT, team: teams.LEFT, classColor: colors.RED },
-        { id: "upButton2", set: false, direction: directions.UP, team: teams.RIGHT },
-        { id: "downButton2", set: false, direction: directions.DOWN, team: teams.RIGHT },
-        { id: "leftButton2", set: false, direction: directions.LEFT, team: teams.RIGHT },
-        { id: "rightButton2", set: false, direction: directions.RIGHT, team: teams.RIGHT },
+        { id: "rightButton1", set: false, direction: directions.RIGHT, team: teams.LEFT, classColor: colors.RED }
       ];
-
+      */
       var room = getParameterByName('room');
       var pass = getParameterByName('pass');
       var amountOfPlayers = getParameterByName('amountOfPlayers');
@@ -101,6 +67,8 @@
       var params = 'room=' + room + '&amountOfPlayers=' + amountOfPlayers;
       var socket = io.connect('http://localhost:3000', { query: params });
       var amountOfButtons = $('button').length;
+
+      /*
 
       $("#startGame").click(function(){
         console.log('Game Started!!');
@@ -164,9 +132,11 @@
         $("#amountOfPlayers").text(playersLeft);
       });
 
+      */
       setTimeout(function() {
-        Simon.init();
-      }, 1000);
+        Snake.init('.board', $('.board').height()/25, $('.board').width()/25);
+      }, 2000);
+
     });
 
     </script>

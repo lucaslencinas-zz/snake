@@ -74,7 +74,7 @@ var Simon = {
 	// allow user to interact with the game
 	activateSimonBoard: function() {
 		var that = this;
-		$('.simon')
+		$('.snake')
 			.on('click', '[data-tile]', function(e) {
 				that.registerClick(e);
 			})
@@ -93,7 +93,7 @@ var Simon = {
 
 	// prevent user from interacting until sequence is done animating
 	deactivateSimonBoard: function() {
-		$('.simon')
+		$('.snake')
 			.off('click', '[data-tile]')
 			.off('mousedown', '[data-tile]')
 			.off('mouseup', '[data-tile]');

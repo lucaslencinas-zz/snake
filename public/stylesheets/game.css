@@ -20,11 +20,6 @@ html,body {
   border: white 1px solid;
   padding: 10px;
 }
-.form-row {
-  display: flex;
-  justify-content: space-between;
-  padding: 5px 0;
-}
 
 .button-row {
   justify-content: center;
@@ -38,26 +33,22 @@ html,body {
   height: 80%
 }
 
-.panels{
+.panel{
   display: flex;
-  height: 80%;
+  flex-direction: column;
+  height: 600px;
   border: antiquewhite 2px solid;
-  width: 90%;
+  width: 900px;
   justify-content: space-between;
 }
 
-.panel{
-  width: 49%;
-  border: blue 1px solid;
-  display: flex;
-  flex-direction: column;
-}
 .players{
   justify-content: space-around;
   margin-top: auto;
   display: flex;
   border: grey 2px solid;
-  height: 10%;
+  height: 96px;
+  width: 100%;
 }
 
 .players div{

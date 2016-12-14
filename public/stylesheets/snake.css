@@ -1,0 +1,23 @@
+.board {
+  display: flex;
+  flex-direction: column;
+  height: 500px;
+  background-color: rgb(41, 41, 41);
+}
+
+.board-row {
+  display: flex;
+}
+
+.position {
+  width: 25px;
+  height: 25px;
+}
+
+.piece {
+  background-color: green;
+}
+
+.food {
+  background-color: yellow;
+}
