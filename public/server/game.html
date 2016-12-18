@@ -18,12 +18,12 @@
       </div>
     </div>
     <div class="button-row">
-      <button id="startGame" data-action="start" disabled>Start Game</button>
+      <button id="startGame" data-action="start">Start Game</button>
     </div>
+    <div class="message">You died, would you like to try again? Hit the start game!</div>
+    <div class="score">Score: <span>0</span></div>
     <div class="panel">
       <div class="board">
-        <div class="board-row">
-        </div>
       </div>
       <div class="players">
         <div id="upButton2">Up</div>
@@ -137,6 +137,9 @@
         Snake.init('.board', $('.board').height()/25, $('.board').width()/25);
       }, 1000);
 
+      $("#startGame").click(function(){
+        Snake.startGame();
+      });
     });
 
     </script>
