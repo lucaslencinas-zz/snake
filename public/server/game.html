@@ -18,7 +18,7 @@
       </div>
     </div>
     <div class="button-row">
-      <button id="startGame" data-action="start">Start Game</button>
+      <button id="startGame" data-action="start" disabled>Start Game</button>
     </div>
     <div class="message">You died, would you like to try again? Hit the start game!</div>
     <div class="score">Score: <span>0</span></div>
@@ -26,10 +26,10 @@
       <div class="board">
       </div>
       <div class="players">
-        <div id="upButton2">Up</div>
-        <div id="downButton2">Down</div>
-        <div id="leftButton2">Left</div>
-        <div id="rightButton2">Right</div>
+        <div id="leftButton" data-code="37">Left</div>
+        <div id="upButton" data-code="38">Up</div>
+        <div id="downButton" data-code="40">Down</div>
+        <div id="rightButton" data-code="39">Right</div>
       </div>
     </div>
     <script src="/javascripts/jquery.js"></script>
@@ -37,47 +37,26 @@
     <script src="/javascripts/queryUtils.js"></script>
     <script src="/javascripts/snake.js"></script>
     <script>
+    var buttons = [], room, pass, amountOfPlayers, socket;
+
     $( document ).ready(function() {
-      /*
+      initDescription();
+      initButtons();
 
-      var colors = {
-        BLUE: '.left .blue',
-        YELLOW: '.left .yellow',
-        GREEN: '.left .green',
-        RED: '.left .red'
-      }
-
-      var teams = {
-        LEFT: 'LEFT',
-        RIGHT: 'RIGHT'
-      }
-      var buttons = [
-        { id: "upButton1", set: false, direction: directions.UP, team: teams.LEFT, classColor: colors.BLUE },
-        { id: "downButton1", set: false, direction: directions.DOWN, team: teams.LEFT, classColor: colors.YELLOW },
-        { id: "leftButton1", set: false, direction: directions.LEFT, team: teams.LEFT, classColor: colors.GREEN },
-        { id: "rightButton1", set: false, direction: directions.RIGHT, team: teams.LEFT, classColor: colors.RED }
-      ];
-      */
-      var room = getParameterByName('room');
-      var pass = getParameterByName('pass');
-      var amountOfPlayers = getParameterByName('amountOfPlayers');
-      $("#roomName").text(room);
-      $("#roomPass").text(pass);
-      $("#amountOfPlayers").text(amountOfPlayers);
       var params = 'room=' + room + '&amountOfPlayers=' + amountOfPlayers;
-      var socket = io.connect('http://localhost:3000', { query: params });
-      var amountOfButtons = $('button').length;
+      socket = io.connect('http://localhost:3000', { query: params });
 
-      /*
-
-      $("#startGame").click(function(){
-        console.log('Game Started!!');
-        socket.emit('game-started', {});
+      socket.on('user-connected', function(data){
+        assignSpot(data.player);
       });
 
-      function isNotSet(button) {
-        return button.set === false;
-      }
+      socket.on('user-disconnected', function(data){
+        unassignSpot(data.player);
+        if (Snake.gameStarted) {
+          Snake.handleDeath();
+        }
+      });
+
       function assignSpot(player) {
         var button = buttons.find(isNotSet);
         $('#' + button.id).css( "background-color", player.color );
@@ -90,38 +69,13 @@
         if(playersLeft == 0) {
           $('#startGame').removeAttr("disabled");
         }
-        console.log('user connected: ' + JSON.stringify(player));
         player.spot = button;
         socket.emit('spot-assigned', player);
       }
 
-      socket.on('user-connected', function(data){
-        assignSpot(data.player);
-      });
-
-      socket.on('current-players', function(data){
-        data.players.forEach(function(player,index) {
-          assignSpot(player);
-        });
-      });
-
-      socket.on('button-clicked', function(data){
-        //data es UpButton1 por ejemplo, hacerlo mejor
-        console.log(data);
+      function unassignSpot(player) {
         var button = buttons.find(function(b){
-          return b.id === data;
-        });
-        var msg = "Team: " + button.team + ", Direction: " + button.direction;
-        Simon.registerClick({target: $(button.classColor)});
-        Simon.playSound($(button.classColor).data('tile'));
-  			Simon.lightUp($(button.classColor).data('tile'));
-        console.log("button-clicked: " + msg);
-      });
-
-      socket.on('user-disconnected', function(data){
-        console.log("User disconnected: " + JSON.stringify(data));
-        var button = buttons.find(function(b){
-          return b.playerId === data.player.id;
+          return b.playerId === player.id;
         });
         $('#' + button.id).removeData( "playerId" );
         $('#' + button.id).css( "background-color", "wheat" );
@@ -130,9 +84,33 @@
         button.playerId = undefined;
         var playersLeft = parseInt($("#amountOfPlayers").text()) + 1;
         $("#amountOfPlayers").text(playersLeft);
+      }
+
+      function isNotSet(button) {
+        return button.set === false;
+      }
+
+      socket.on('current-players', function(data){
+        data.players.forEach(function(player,index) {
+          assignSpot(player);
+        });
       });
 
-      */
+      $("#startGame").click(function(){
+        socket.emit('game-started', {});
+      });
+
+      socket.on('button-clicked', function(data){
+        buttonClicked(data);
+      });
+
+      function buttonClicked(data) {
+        var button = buttons.find(function(b){
+          return b.id === data;
+        });
+        Snake.nextDirection  = directionKeyCodes[button.keyCode];
+      }
+
       setTimeout(function() {
         Snake.init('.board', $('.board').height()/25, $('.board').width()/25);
       }, 1000);
@@ -142,6 +120,25 @@
       });
     });
 
+    function initButtons() {
+      $('.players div').each(function(index) {
+        buttons.push({
+          id:         $(this).attr('id'),
+          set:        false,
+          direction:  directionKeyCodes[$(this).data('code')],
+          keyCode:    $(this).data('code')
+        });
+      });
+    }
+
+    function initDescription() {
+      room = getParameterByName('room');
+      pass = getParameterByName('pass');
+      amountOfPlayers = getParameterByName('amountOfPlayers');
+      $('#roomName').text(room);
+      $('#roomPass').text(pass);
+      $('#amountOfPlayers').text(amountOfPlayers);
+    }
     </script>
   </body>
 </html>

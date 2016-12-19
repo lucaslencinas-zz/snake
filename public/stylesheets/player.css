@@ -1,0 +1,37 @@
+html,body {
+  height: 100%;
+  width: 100%;
+  margin: 0;
+  background-color: darkkhaki;
+  font-family: 'Lucida Console', Monaco;
+  font-size: 40px;
+}
+h2 {
+  font-size: 70px;
+  text-align: center;
+}
+.main {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 100%;
+}
+
+.detail {
+  display: flex;
+  width: 90%;
+  justify-content: space-around;
+  border: antiquewhite 2px solid;
+  height: 8%;
+}
+
+.infodivs {
+  border: white 1px solid;
+  padding: 10px;
+}
+
+button {
+  height: 60%;
+  width: 80%;
+  font-size: inherit;
+}
