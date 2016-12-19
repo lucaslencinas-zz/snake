@@ -1,49 +1,9 @@
 <!doctype html>
 <html>
   <head>
-    <title>Socket.IO chat</title>
-    <style>
-      html,body {
-        height: 100%;
-        width: 100%;
-        background-color: darkkhaki;
-        font-family: 'Lucida Console', Monaco;
-      }
-      .main {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-      }
-
-      .form {
-        border: white 2px solid;
-        padding: 30px;
-        width: 300px;
-      }
-      .form-row {
-        display: flex;
-        justify-content: space-between;
-        padding: 5px 0;
-      }
-
-      .button-row {
-        justify-content: center;
-      }
-
-      label {
-        display: inline-block;
-        width: 50%;
-        text-align: right;
-      }
-
-      input, select {
-        position: relative;;
-        right: 0;
-        width: 40%;
-      }
-
-    </style>
+    <title>Create Snake Game</title>
   </head>
+  <link rel="stylesheet" href="/stylesheets/create.css">
   <body>
     <div class="main">
       <h2>Create Game</h2>
@@ -60,7 +20,6 @@
           <label for="roomPlayers">Players: </label>
           <select name="roomPlayers" id="roomPlayers">
             <option value="4">4</option>
-            <option value="8">8</option>
           </select>
         </div>
         <div class="form-row button-row">
@@ -68,8 +27,6 @@
         </div>
       </div>
     </div>
-
-    <script src="/javascripts/socketio.js"></script>
     <script src="/javascripts/jquery.js"></script>
     <script>
       $( document ).ready(function() {

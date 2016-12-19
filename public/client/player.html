@@ -3,46 +3,8 @@
   <head>
     <meta name="viewport" content="user-scalable=no" />
     <title>Socket.IO chat</title>
-    <style>
-      html,body {
-        height: 100%;
-        width: 100%;
-        margin: 0;
-        background-color: darkkhaki;
-        font-family: 'Lucida Console', Monaco;
-        font-size: 40px;
-      }
-      h2 {
-        font-size: 70px;
-        text-align: center;
-      }
-      .main {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        height: 100%;
-      }
-
-      .detail {
-        display: flex;
-        width: 90%;
-        justify-content: space-around;
-        border: antiquewhite 2px solid;
-        height: 8%;
-      }
-
-      .infodivs {
-        border: white 1px solid;
-        padding: 10px;
-      }
-
-      button {
-        height: 60%;
-        width: 80%;
-        font-size: inherit;
-      }
-    </style>
   </head>
+  <link rel="stylesheet" href="/stylesheets/player.css">
   <body>
     <div class="main">
       <div class="detail">
@@ -62,15 +24,6 @@
     <script src="/javascripts/queryUtils.js"></script>
     <script>
       $( document ).ready(function() {
-        // function randomIntFromInterval(min,max){
-        //   return Math.floor(Math.random()*(max-min+1)+min);
-        // }
-        // var times = [];
-        // for(var i = 0; i < 10; i++){
-        //   var time = randomIntFromInterval(3, 8);
-        //   console.log('time: ' + time)
-        //   times.push(time);
-        // }
         var room = getParameterByName('room');
         var name = getParameterByName('name');
         var playersLeft = 5;
@@ -79,6 +32,7 @@
         $("#playersLeft").text(playersLeft);
         var params = 'room=' + room + '&name=' + name;
         var socket = io.connect(window.location.origin, { query: params });
+
         $('#mySpot').click(function(){
           socket.emit('button-clicked', $("#mySpot").data('spot'));
           return false;
@@ -86,18 +40,11 @@
 
         socket.on('spot-assigned', function(player){
           $("#mySpot").data('spot', player.spot.id);
-          $("#mySpot").text('Team: ' + player.spot.team + ' - Direction:' + player.spot.direction );
-          console.log('spot assigned: ' + JSON.stringify(player));
+          $("#mySpot").text('Direction:' + player.spot.direction );
         });
 
         socket.on('game-started', function(){
           console.log('game started!! ');
-          // times.forEach(function(element, index){
-          //   var actualTime = element * 100;
-          //   setTimeout(function() {
-          //     $("#mySpot").click();
-          //   }, element * 1000);
-          // });
         });
       });
     </script>

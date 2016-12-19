@@ -29,6 +29,7 @@ var Snake = {
 	boardClass: '.board',
 	height: 20,
 	width: 30,
+	gameStarted: false,
 
 	init: function(boardClass, height, width) {
 		this.boardClass = boardClass || this.boardClass;
@@ -40,10 +41,11 @@ var Snake = {
 	},
 
 	setDefaultComponents: function() {
-		this.snakeDirection = directions.RIGHT,
-		this.nextDirection = directions.RIGHT,
+		this.snakeDirection = directions.RIGHT;
+		this.nextDirection = directions.RIGHT;
+		this.timeBeetwenFrames = 200;
 		this.food = {x: 1, y: 1};
-		this.body = [{ x: 3, y: 1 }, { x: 2, y: 1 }, { x: 1, y: 1 }];
+		this.body = [{ x: 5, y: 1 }, { x: 4, y: 1 }, { x: 3, y: 1 }, { x: 2, y: 1 }, { x: 1, y: 1 }];
 		this.placeSnake(Math.floor(this.width / 5), Math.floor(this.height / 5));
 		this.placeFood(Math.floor(this.width * 3 / 5), Math.floor(this.height * 3 / 5));
 		this.drawSnake();
@@ -104,6 +106,7 @@ var Snake = {
 			this.cleanBoard();
 			this.setDefaultComponents();
 		}
+		this.gameStarted = true;
 		var self = this;
 		lastTimestamp = Date.now();
 		animationFrameId = requestAnimationFrame(self.mainLoop.bind(self));
@@ -123,6 +126,7 @@ var Snake = {
 		if(this.isOverFoodPosition()) {
 			this.eatFood(last);
 			this.increaseScore();
+			this.increaseSpeed();
 			this.createMoreFood();
 		}
 		if(this.isOverMyself() || this.isOutOfBoard()) {
@@ -132,6 +136,27 @@ var Snake = {
 
 	increaseScore: function() {
 		$('.score span').text(parseInt($('.score span').text()) + 10);
+	},
+
+	increaseSpeed: function() {
+		console.log(this.timeBeetwenFrames);
+		this.timeBeetwenFrames-= this.getDecrementValue();
+	},
+
+	getDecrementValue: function() {
+		// like an hiperbole with asintotes in the 50 points
+		var t = this.timeBeetwenFrames;
+		if(t > 150)
+			return 5;
+		if(t > 125)
+			return 4;
+		if(t > 100)
+			return 3;
+		if(t > 75)
+			return 2;
+		if(t > 50)
+			return 1;
+		return Math.round(Math.random());
 	},
 
 	isOverMyself: function() {
@@ -144,8 +169,8 @@ var Snake = {
 	},
 
 	isOutOfBoard: function() {
-		var outOfWidth = this.body[0].x > this.width || this.body[0].x < 0;
-		var outOfHeight = this.body[0].y > this.height || this.body[0].y < 0;
+		var outOfWidth = this.body[0].x > this.width || this.body[0].x < 1;
+		var outOfHeight = this.body[0].y > this.height || this.body[0].y < 1;
 		return outOfHeight || outOfWidth;
 	},
 
@@ -154,6 +179,7 @@ var Snake = {
 			cancelAnimationFrame(animationFrameId);
 			animationFrameId = undefined;
 		}
+		this.gameStarted = false;
 		openTryAgainPopUp();
 	},
 
@@ -176,7 +202,7 @@ var Snake = {
 
 	animate: function(timestamp) {
 		var delta = timestamp - lastTimestamp;
-		if(delta > 50) {
+		if(delta > this.timeBeetwenFrames) {
 			this.moveSnake();
 			lastTimestamp = timestamp;
 		}
@@ -257,5 +283,6 @@ function samePosition(pos1, pos2) {
 
 function openTryAgainPopUp() {
 	$('.message').css('visibility', 'visible');
-	$("#startGame").prop('disabled', false);
+	if (parseInt($("#amountOfPlayers").text()) === 0)
+		$("#startGame").prop('disabled', false);
 }

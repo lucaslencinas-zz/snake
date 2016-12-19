@@ -1,0 +1,57 @@
+html,body {
+  height: 100%;
+  width: 100%;
+  margin: 0;
+  background-color: darkkhaki;
+  font-family: 'Lucida Console', Monaco;
+  font-size: 40px;
+}
+h2 {
+  font-size: 80px;
+}
+.main {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 100%;
+}
+
+.form {
+  border: white 2px solid;
+  padding: 30px 10px 0;
+  width: 90%;
+  height: 65%;
+  display: flex;
+  flex-direction: column;
+}
+.form-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 5px 0;
+}
+
+.button-row {
+  justify-content: center;
+  margin-top: auto;
+  height: 20%;
+}
+
+.button-row button {
+  width: 40%;
+  font-size: inherit;
+}
+
+
+label {
+  display: inline-block;
+  width: 35%;
+  text-align: right;
+}
+
+input, select {
+  position: relative;;
+  right: 0;
+  width: 40%;
+  font-size: 40px;
+  padding: 5px;
+}
