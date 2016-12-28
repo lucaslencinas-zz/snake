@@ -48,18 +48,14 @@
 
       socket.on('user-connected', function(data){
         console.log('user-connected: ' + JSON.stringify(data));
-        if(data.player.room === room) {
-          assignSpot(data.player);
-        }
+        assignSpot(data.player);
       });
 
       socket.on('user-disconnected', function(data){
         console.log('user-disconnected: ' + JSON.stringify(data));
-        if(data.player.room === room) {
-          unassignSpot(data.player);
-          if (Snake.gameStarted) {
-            Snake.handleDeath();
-          }
+        unassignSpot(data.player);
+        if (Snake.gameStarted) {
+          Snake.handleDeath();
         }
       });
 
@@ -97,11 +93,9 @@
       }
 
       socket.on('current-players', function(data){
-        if(data.room === room) {
-          data.players.forEach(function(player,index) {
-            assignSpot(player);
-          });
-        }
+        data.players.forEach(function(player,index) {
+          assignSpot(player);
+        });
       });
 
       $("#startGame").click(function(){
@@ -110,9 +104,7 @@
 
       socket.on('button-clicked', function(data){
         console.log('button-clicked: ' + JSON.stringify(data));
-        if(data.room === room) {
-          buttonClicked(data.button);
-        }
+        buttonClicked(data.button);
       });
       function buttonClicked(data) {
         var button = buttons.find(function(b){

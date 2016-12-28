@@ -17,6 +17,7 @@ module.exports.base = {
   },
   insertRoom: function(room) {
     rooms.insert(room);
+    console.log('Total rooms In DB: ' + this.getRooms().length);
   },
   getPlayers: function() {
     return players.data;
@@ -37,6 +38,9 @@ module.exports.base = {
   },
   removePlayerById: function(id){
     players.removeWhere({ 'id': id });
+  },
+  removeRoomById: function(id){
+    rooms.removeWhere({ 'id': id });
   },
   getRoomFromPlayerId: function(playerId) {
     var player = players.find({ 'id': playerId })[0];

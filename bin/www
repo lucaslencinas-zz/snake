@@ -52,6 +52,7 @@ base.create();
  */
 server.listen('3000');
 io.on('connection', function(socket){
+  console.log('Someone connected: ' + socket.id);
   var room;
   if(socket.handshake.query.amountOfPlayers){
     // Is the server
@@ -64,9 +65,10 @@ io.on('connection', function(socket){
         amountOfPlayers: socket.handshake.query.amountOfPlayers
       }
       base.insertRoom(room);
+      console.log(socket.id);
       console.log('Room Created: ' + JSON.stringify(_.pick(room, ['id', 'room', 'pass'])));
     }
-    io.sockets.connected[socket.id].emit('current-players', { msg: "Current players", room: socket.handshake.query.room, players: base.getRoomPlayers(socket.handshake.query.room) });
+    io.to(socket.id).emit('current-players', { msg: "Current players", room: socket.handshake.query.room, players: base.getRoomPlayers(socket.handshake.query.room) });
   } else {
 
     var player = {
@@ -79,19 +81,19 @@ io.on('connection', function(socket){
     console.log('Player connected: ' + JSON.stringify(_.pick(player, ['id', 'room', 'name'])));
     var wantedRoom = base.getRoomFromPlayerId(socket.id);
     if(wantedRoom !== undefined) {
-      socket.broadcast.to(wantedRoom.id).emit('user-connected', { msg: "usuario connectado", player: player });
+      io.to(wantedRoom.id).emit('user-connected', { msg: "usuario connectado", player: player });
     }
   }
 
   socket.on('button-clicked', function(msg){
     console.log('button-clicked: ' + msg.room + ', ' + msg.button);
     var playerRoom = base.getRoomFromPlayerId(socket.id);
-    socket.broadcast.to(playerRoom.id).emit('button-clicked', msg);
+    io.to(wantedRoom.id).emit('button-clicked', msg);
   });
 
   socket.on('spot-assigned', function(player){
-    console.log('spot-assigned: ' + JSON.stringify(player));
-    socket.broadcast.to(player.id).emit("spot-assigned", player);
+    console.log('spot-assigned: ' + JSON.stringify(_.pick(player, ['id', 'room', 'name'])));
+    io.to(player.id).emit("spot-assigned", player);
   });
 
   socket.on('game-started', function(msg){
@@ -100,12 +102,17 @@ io.on('connection', function(socket){
   });
 
   socket.on('disconnect', function() {
+    console.log('Someone disconnected!!');
     var player = base.findPlayer(socket.id);
     if (player !== undefined) {
       var wantedRoom = base.getRoomFromPlayerId(socket.id);
-      socket.broadcast.to(wantedRoom.id).emit('user-disconnected', {msg: "usuario desconectado", player: player});
+      console.log('wantedRoom when user disconnect: ' + JSON.stringify(_.pick(wantedRoom, ['id', 'room'])));
+      io.to(wantedRoom.id).emit('user-disconnected', {msg: "usuario desconectado", player: player});
       base.removePlayerById(player.id);
       console.log('Got disconnect: ' + JSON.stringify(_.pick(player, ['id', 'room', 'name'])));
+    } else {
+      // Its a Game board
+      base.removeRoomById(socket.id);
     }
   });
 });
