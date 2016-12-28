@@ -13,12 +13,18 @@ module.exports.base = {
   },
   insertPlayer: function(player) {
     players.insert(player);
+    console.log('Total players In DB: ' + this.getPlayers().length);
   },
   insertRoom: function(room) {
     rooms.insert(room);
   },
   getPlayers: function() {
     return players.data;
+  },
+  getRoomPlayers: function(room) {
+    return players.data.filter(function(player) {
+      return room === player.room
+    });
   },
   getRooms: function() {
     return rooms.data;
@@ -31,5 +37,9 @@ module.exports.base = {
   },
   removePlayerById: function(id){
     players.removeWhere({ 'id': id });
+  },
+  getRoomFromPlayerId: function(playerId) {
+    var player = players.find({ 'id': playerId })[0];
+    return rooms.find({ 'room': player.room })[0];
   }
 };

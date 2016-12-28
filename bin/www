@@ -4,6 +4,7 @@
  * Module dependencies.
  */
 
+ var _ = require('lodash');
 var app = require('../app');
 var server = require('http').Server(app);
 var io = require('socket.io')(server);
@@ -51,9 +52,21 @@ base.create();
  */
 server.listen('3000');
 io.on('connection', function(socket){
+  var room;
   if(socket.handshake.query.amountOfPlayers){
     // Is the server
-    io.emit('current-players', {msg: "Current players", players: base.getPlayers()});
+    room = base.findRoom(socket.handshake.query.room);
+    if (room === undefined) {
+      room = {
+        id: socket.id,
+        room: socket.handshake.query.room,
+        pass: socket.handshake.query.pass,
+        amountOfPlayers: socket.handshake.query.amountOfPlayers
+      }
+      base.insertRoom(room);
+      console.log('Room Created: ' + JSON.stringify(_.pick(room, ['id', 'room', 'pass'])));
+    }
+    io.sockets.connected[socket.id].emit('current-players', { msg: "Current players", room: socket.handshake.query.room, players: base.getRoomPlayers(socket.handshake.query.room) });
   } else {
 
     var player = {
@@ -63,30 +76,36 @@ io.on('connection', function(socket){
       color: colors[getRandomInt(0,colors.length)]
     };
     base.insertPlayer(player);
-    console.log('players: ' + base.getPlayers());
-    io.emit('user-connected', {msg: "usuario connectado", player: player});
+    console.log('Player connected: ' + JSON.stringify(_.pick(player, ['id', 'room', 'name'])));
+    var wantedRoom = base.getRoomFromPlayerId(socket.id);
+    if(wantedRoom !== undefined) {
+      socket.broadcast.to(wantedRoom.id).emit('user-connected', { msg: "usuario connectado", player: player });
+    }
   }
 
   socket.on('button-clicked', function(msg){
-    io.emit('button-clicked', msg);
+    console.log('button-clicked: ' + msg.room + ', ' + msg.button);
+    var playerRoom = base.getRoomFromPlayerId(socket.id);
+    socket.broadcast.to(playerRoom.id).emit('button-clicked', msg);
   });
 
   socket.on('spot-assigned', function(player){
-    console.log('spot-assigned');
-    io.to(player.id).emit("spot-assigned", player);
+    console.log('spot-assigned: ' + JSON.stringify(player));
+    socket.broadcast.to(player.id).emit("spot-assigned", player);
   });
 
   socket.on('game-started', function(msg){
     console.log('game-started!!');
-    io.emit('game-started', {});
+    socket.broadcast.emit('game-started', {});
   });
 
   socket.on('disconnect', function() {
     var player = base.findPlayer(socket.id);
     if (player !== undefined) {
+      var wantedRoom = base.getRoomFromPlayerId(socket.id);
+      socket.broadcast.to(wantedRoom.id).emit('user-disconnected', {msg: "usuario desconectado", player: player});
       base.removePlayerById(player.id);
-      io.emit('user-disconnected', {msg: "usuario desconectado", player: player});
-      console.log('Got disconnect: ' + JSON.stringify(player));
+      console.log('Got disconnect: ' + JSON.stringify(_.pick(player, ['id', 'room', 'name'])));
     }
   });
 });

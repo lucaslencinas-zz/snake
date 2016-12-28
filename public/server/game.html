@@ -43,17 +43,23 @@
       initDescription();
       initButtons();
 
-      var params = 'room=' + room + '&amountOfPlayers=' + amountOfPlayers;
+      var params = 'room=' + room + '&pass=' + pass + '&amountOfPlayers=' + amountOfPlayers;
       socket = io.connect('http://localhost:3000', { query: params });
 
       socket.on('user-connected', function(data){
-        assignSpot(data.player);
+        console.log('user-connected: ' + JSON.stringify(data));
+        if(data.player.room === room) {
+          assignSpot(data.player);
+        }
       });
 
       socket.on('user-disconnected', function(data){
-        unassignSpot(data.player);
-        if (Snake.gameStarted) {
-          Snake.handleDeath();
+        console.log('user-disconnected: ' + JSON.stringify(data));
+        if(data.player.room === room) {
+          unassignSpot(data.player);
+          if (Snake.gameStarted) {
+            Snake.handleDeath();
+          }
         }
       });
 
@@ -91,9 +97,11 @@
       }
 
       socket.on('current-players', function(data){
-        data.players.forEach(function(player,index) {
-          assignSpot(player);
-        });
+        if(data.room === room) {
+          data.players.forEach(function(player,index) {
+            assignSpot(player);
+          });
+        }
       });
 
       $("#startGame").click(function(){
@@ -101,9 +109,11 @@
       });
 
       socket.on('button-clicked', function(data){
-        buttonClicked(data);
+        console.log('button-clicked: ' + JSON.stringify(data));
+        if(data.room === room) {
+          buttonClicked(data.button);
+        }
       });
-
       function buttonClicked(data) {
         var button = buttons.find(function(b){
           return b.id === data;

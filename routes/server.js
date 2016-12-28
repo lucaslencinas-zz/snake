@@ -8,11 +8,6 @@ router.get('/create', function(req, res, next){
 });
 
 router.get('/game', function(req, res, next){
-  base.insertRoom({
-    room: req.query.room,
-    pass: req.query.pass,
-    amountOfPlayers: req.query.amountOfPlayers
-  });
   res.sendFile(path.join(__dirname, '../public', '/server/game.html'));
 });
 

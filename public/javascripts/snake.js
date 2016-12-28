@@ -43,7 +43,7 @@ var Snake = {
 	setDefaultComponents: function() {
 		this.snakeDirection = directions.RIGHT;
 		this.nextDirection = directions.RIGHT;
-		this.timeBeetwenFrames = 200;
+		this.timeBeetwenFrames = 1700;
 		this.food = {x: 1, y: 1};
 		this.body = [{ x: 5, y: 1 }, { x: 4, y: 1 }, { x: 3, y: 1 }, { x: 2, y: 1 }, { x: 1, y: 1 }];
 		this.placeSnake(Math.floor(this.width / 5), Math.floor(this.height / 5));
