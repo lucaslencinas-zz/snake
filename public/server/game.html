@@ -43,14 +43,16 @@
       initDescription();
       initButtons();
 
-      var params = 'room=' + room + '&amountOfPlayers=' + amountOfPlayers;
+      var params = 'room=' + room + '&pass=' + pass + '&amountOfPlayers=' + amountOfPlayers;
       socket = io.connect('http://localhost:3000', { query: params });
 
       socket.on('user-connected', function(data){
+        console.log('user-connected: ' + JSON.stringify(data));
         assignSpot(data.player);
       });
 
       socket.on('user-disconnected', function(data){
+        console.log('user-disconnected: ' + JSON.stringify(data));
         unassignSpot(data.player);
         if (Snake.gameStarted) {
           Snake.handleDeath();
@@ -101,9 +103,9 @@
       });
 
       socket.on('button-clicked', function(data){
-        buttonClicked(data);
+        console.log('button-clicked: ' + JSON.stringify(data));
+        buttonClicked(data.button);
       });
-
       function buttonClicked(data) {
         var button = buttons.find(function(b){
           return b.id === data;

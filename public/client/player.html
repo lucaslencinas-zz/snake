@@ -34,7 +34,7 @@
         var socket = io.connect(window.location.origin, { query: params });
 
         $('#mySpot').click(function(){
-          socket.emit('button-clicked', $("#mySpot").data('spot'));
+          socket.emit('button-clicked', {room: room, button: $("#mySpot").data('spot')});
           return false;
         });
 
