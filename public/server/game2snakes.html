@@ -1,0 +1,98 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Socket.IO chat</title>
+  </head>
+  <link rel="stylesheet" type="text/css" href="/stylesheets/game2snakes.css">
+  <link rel="stylesheet" type="text/css" href="/stylesheets/snake.css">
+  <body>
+    <div class="detail">
+      <div class="infodivs">
+        Room: <span id="roomName">...</span>
+      </div>
+      <div class="infodivs">
+        Pass: <span id="roomPass">...</span>
+      </div>
+      <div class="infodivs">
+        Amount of players: <span id="amountOfPlayers">...</span>
+      </div>
+    </div>
+    <div class="button-row">
+      <button id="startGame" data-action="start">Start Game</button>
+      <div class="message">Team <span>X</span> died, would you like to try again? Hit the start game!</div>
+    </div>
+
+    <div class="teams">
+      <div class="team team1">
+        <div class="score">Score: <span>0</span></div>
+        <div class="panel">
+          <div class="board">
+          </div>
+          <div class="players">
+            <div id="leftButton1" data-code="65">Left</div>
+            <div id="upButton1" data-code="83">Up</div>
+            <div id="downButton1" data-code="68">Down</div>
+            <div id="rightButton1" data-code="87">Right</div>
+          </div>
+        </div>
+      </div>
+      <div class="team team2">
+        <div class="score">Score: <span>0</span></div>
+        <div class="panel">
+          <div class="board">
+          </div>
+          <div class="players">
+            <div id="leftButton2" data-code="37">Left</div>
+            <div id="upButton2" data-code="38">Up</div>
+            <div id="downButton2" data-code="40">Down</div>
+            <div id="rightButton2" data-code="39">Right</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script src="/javascripts/jquery.js"></script>
+    <script src="/javascripts/socketio.js"></script>
+    <script src="/javascripts/queryUtils.js"></script>
+    <script src="/javascripts/snake2.js"></script>
+    <script src="/javascripts/game.js"></script>
+    <script src="/javascripts/socket.js"></script>
+    <script src="/javascripts/room.js"></script>
+    <script>
+      var room, pass, amountOfPlayers, room2Boards;
+      var directionKeyCodes = {
+        team1: {
+          65: directions.LEFT,
+        	87: directions.UP,
+        	68: directions.RIGHT,
+        	83: directions.DOWN
+        },
+        team2: {
+          37: directions.LEFT,
+        	38: directions.UP,
+        	39: directions.RIGHT,
+        	40: directions.DOWN
+        }
+      };
+
+      $( document ).ready(function() {
+        initDescription();
+        room2Boards = new Room({
+          room: room,
+          pass: pass,
+          amountOfPlayers: amountOfPlayers
+        });
+
+
+      });
+
+      function initDescription() {
+        room = getParameterByName('room');
+        pass = getParameterByName('pass');
+        amountOfPlayers = getParameterByName('amountOfPlayers');
+        $('#roomName').text(room);
+        $('#roomPass').text(pass);
+        $('#amountOfPlayers').text(amountOfPlayers);
+      }
+    </script>
+  </body>
+</html>

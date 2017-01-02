@@ -52,7 +52,6 @@ base.create();
  */
 server.listen('3000');
 io.on('connection', function(socket){
-  console.log('Someone connected: ' + socket.id);
   var room;
   if(socket.handshake.query.amountOfPlayers){
     // Is the server
@@ -65,7 +64,6 @@ io.on('connection', function(socket){
         amountOfPlayers: socket.handshake.query.amountOfPlayers
       }
       base.insertRoom(room);
-      console.log(socket.id);
       console.log('Room Created: ' + JSON.stringify(_.pick(room, ['id', 'room', 'pass'])));
     }
     io.to(socket.id).emit('current-players', { msg: "Current players", room: socket.handshake.query.room, players: base.getRoomPlayers(socket.handshake.query.room) });
@@ -87,7 +85,7 @@ io.on('connection', function(socket){
 
   socket.on('button-clicked', function(msg){
     console.log('button-clicked: ' + msg.room + ', ' + msg.button);
-    var playerRoom = base.getRoomFromPlayerId(socket.id);
+    var wantedRoom = base.getRoomFromPlayerId(socket.id);
     io.to(wantedRoom.id).emit('button-clicked', msg);
   });
 
@@ -106,8 +104,10 @@ io.on('connection', function(socket){
     var player = base.findPlayer(socket.id);
     if (player !== undefined) {
       var wantedRoom = base.getRoomFromPlayerId(socket.id);
-      console.log('wantedRoom when user disconnect: ' + JSON.stringify(_.pick(wantedRoom, ['id', 'room'])));
-      io.to(wantedRoom.id).emit('user-disconnected', {msg: "usuario desconectado", player: player});
+      if(wantedRoom !== undefined) {
+        console.log('wantedRoom when user disconnect: ' + JSON.stringify(_.pick(wantedRoom, ['id', 'room'])));
+        io.to(wantedRoom.id).emit('user-disconnected', {msg: "usuario desconectado", player: player});
+      }
       base.removePlayerById(player.id);
       console.log('Got disconnect: ' + JSON.stringify(_.pick(player, ['id', 'room', 'name'])));
     } else {

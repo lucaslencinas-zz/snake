@@ -9,3 +9,10 @@ function getParameterByName(name, url) {
     if (!results[2]) return '';
     return decodeURIComponent(results[2].replace(/\+/g, " "));
 }
+
+function encodeQueryData(object) {
+   var params = [];
+   for (var attr in object)
+     params.push(encodeURIComponent(attr) + '=' + encodeURIComponent(object[attr]));
+   return params.join('&');
+}
