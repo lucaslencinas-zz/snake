@@ -1,0 +1,77 @@
+html,body {
+  height: 100%;
+  width: 100%;
+  margin: 0;
+  background-color: darkkhaki;
+  font-family: 'Lucida Console', Monaco;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.detail {
+  display: flex;
+  width: 90%;
+  justify-content: space-around;
+  border: antiquewhite 2px solid;
+  height: 8%;
+}
+
+.infodivs {
+  border: white 1px solid;
+  padding: 10px;
+}
+
+.button-row {
+  justify-content: center;
+  display: flex;
+  align-self: center;
+  flex-direction: column;
+  height: 6%
+}
+
+.button-row button {
+  height: 80%
+}
+
+.teams {
+  display: flex;
+  flex-direction: row;
+}
+
+.team {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.panel {
+  display: flex;
+  flex-direction: column;
+  height: 600px;
+  border: antiquewhite 2px solid;
+  width: 900px;
+  justify-content: space-between;
+}
+
+.players {
+  justify-content: space-around;
+  margin-top: auto;
+  display: flex;
+  border: grey 2px solid;
+  height: 96px;
+  width: 100%;
+}
+
+.players div{
+  width: 23%;
+  border: blue 1px solid;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+
+.message {
+  color: red;
+  visibility: hidden;
+}
