@@ -104,8 +104,10 @@ io.on('connection', function(socket){
     var player = base.findPlayer(socket.id);
     if (player !== undefined) {
       var wantedRoom = base.getRoomFromPlayerId(socket.id);
-      console.log('wantedRoom when user disconnect: ' + JSON.stringify(_.pick(wantedRoom, ['id', 'room'])));
-      io.to(wantedRoom.id).emit('user-disconnected', {msg: "usuario desconectado", player: player});
+      if(wantedRoom !== undefined) {
+        console.log('wantedRoom when user disconnect: ' + JSON.stringify(_.pick(wantedRoom, ['id', 'room'])));
+        io.to(wantedRoom.id).emit('user-disconnected', {msg: "usuario desconectado", player: player});
+      }
       base.removePlayerById(player.id);
       console.log('Got disconnect: ' + JSON.stringify(_.pick(player, ['id', 'room', 'name'])));
     } else {

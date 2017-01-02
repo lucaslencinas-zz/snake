@@ -38,9 +38,11 @@ module.exports.base = {
   },
   removePlayerById: function(id){
     players.removeWhere({ 'id': id });
+    console.log('Total players In DB: ' + this.getPlayers().length);
   },
   removeRoomById: function(id){
     rooms.removeWhere({ 'id': id });
+    console.log('Total rooms In DB: ' + this.getRooms().length);
   },
   getRoomFromPlayerId: function(playerId) {
     var player = players.find({ 'id': playerId })[0];
